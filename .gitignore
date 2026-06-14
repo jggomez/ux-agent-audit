@@ -1,0 +1,63 @@
+# Python compilation artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# PyInstaller build files
+build/
+dist/
+
+# Logs and debug files
+*.log
+ux_audit.log
+
+# Environment variables and secrets
+.env
+.env.*
+
+# Testing and coverage outputs
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Playwright MCP browser temp directory
+.playwright-mcp/
+
+# OS specific files
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+Desktop.ini
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# Python packaging and distribution
+*.egg-info/
+.eggs/
+*.egg
+eggs/
+parts/
+sdist/
+var/
+wheels/
+
+# Local databases
+*.db
+*.sqlite
+*.sqlite3
+
