@@ -161,12 +161,23 @@ Once the application opens (it launches maximized by default):
    * Click **Add User Story** to include it in the validation queue.
    * *If no user stories are added, the agent performs a general UX/UI and accessibility heuristic audit of the page.*
 3. **Gemini API Key**: Paste your Gemini API Key in the **API Key** input field (it will be persisted securely on your system).
+------
+
+<img width="1440" height="900" alt="Screenshot 2026-06-14 at 4 33 14 p m" src="https://github.com/user-attachments/assets/815d1d10-0511-4b48-b41b-578a144011d0" />
+
+-------
 
 #### Step 3: Run the Audit
 Click the **Start Audit** button at the bottom of the screen.
 * The application will switch to the **Live Auditing Console**.
 * The left panel displays a checklist showing the active browser stage (e.g., *Initializing, Launching viewport, Executing actions, Streaming report*).
 * The right panel displays the **Reasoning thoughts log** in real-time, showing the agent's internal reasoning, selected browser tools, and selectors it plans to click.
+-------
+
+<img width="1412" height="867" alt="Screenshot 2026-06-14 at 4 28 41 p m" src="https://github.com/user-attachments/assets/c778d443-c10a-417f-bb7e-acc77bea7edb" />
+
+-------
+
 
 #### Step 4: View and Export the Results
 Once completed, the app switches to the **Report View**:
@@ -178,6 +189,22 @@ Once completed, the app switches to the **Report View**:
   * **Export to PDF**: Prints a styled PDF report to your local disk.
   * **Export Thoughts**: Saves the agent's thinking process log as a `.txt` file.
   * Click **Start New Audit** to return to Step 2.
+ 
+---
+<img width="1431" height="872" alt="Screenshot 2026-06-14 at 4 32 29 p m" src="https://github.com/user-attachments/assets/fce69239-3bfa-4fae-9434-44f2b3f03cbe" />
+
+---
+<img width="524" height="401" alt="Screenshot 2026-06-14 at 3 06 09 p m" src="https://github.com/user-attachments/assets/abf6f5f6-2fea-43c7-bf52-92c45b7ed4f1" />
+
+---
+<img width="460" height="377" alt="Screenshot 2026-06![Uploading Screenshot 2026-06-14 at 3.06.09 p.m..png…]()
+-14 at 3 06 25 p m" src="https://github.com/user-attachments/assets/6b0d26d1-4145-4a48-9da1-67acb3c4e30b" />
+
+---
+<img width="516" height="396" alt="Screenshot 2026-06-14 at 3 06 32 p m" src="https://github.com/user-attachments/assets/23df6b53-b311-4f1d-bff5-9151c4d2ae9d" />
+
+---
+<img width="492" height="494" alt="Screenshot 2026-06-14 at 3 06 41 p m" src="https://github.com/user-attachments/assets/3722c8c3-d3d9-4e01-a734-80e5cbf740bc" />
 
 ---
 
