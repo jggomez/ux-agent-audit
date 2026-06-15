@@ -18,13 +18,6 @@ SECTION_REPORT: str = "  FINAL UX/UI AUDIT REPORT"
 
 DEFAULT_AUDIT_URL: str = "https://devhack.co/academy-ai/index.html"
 
-DEFAULT_USER_STORIES: tuple[str, ...] = (
-    "As a new user, I want to sign up with my Google account "
-    "so that I do not have to remember a new password.",
-    "As an administrator, I want to monitor active database flags "
-    "on the dashboard to ensure the production systems are healthy.",
-)
-
 # ─── Exit Codes ───────────────────────────────────────────────────────────────
 
 EXIT_SUCCESS: int = 0

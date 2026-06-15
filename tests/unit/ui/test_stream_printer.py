@@ -1,8 +1,7 @@
 import asyncio
 import pytest
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 from ux_audit.ui.stream_printer import AuditStreamPrinter
-from ux_audit.core.constants import SECTION_REASONING, SECTION_REPORT
 
 class AsyncIterableMock:
     """A helper to mock async iterables for response thoughts and chunks."""

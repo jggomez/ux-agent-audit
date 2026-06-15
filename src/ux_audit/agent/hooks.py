@@ -53,7 +53,6 @@ class AuditCompactionHook(hooks.OnCompactionHook):
 
 
 import os
-import base64
 
 class AuditPostToolCallHook(hooks.PostToolCallHook):
     """
@@ -74,8 +73,10 @@ class AuditPostToolCallHook(hooks.PostToolCallHook):
             project_dir = os.getcwd()
             playwright_mcp_dir = os.path.join(project_dir, ".playwright-mcp")
             if not os.path.exists(playwright_mcp_dir):
-                # Fallback to absolute path
-                playwright_mcp_dir = "/Users/jggomez/Documents/jggomez/consultorias/overty/agent-ux-ui/.playwright-mcp"
+                # Fallback to path relative to this module's location (3 levels up from hooks.py)
+                current_file_dir = os.path.dirname(os.path.abspath(__file__))
+                project_root = os.path.abspath(os.path.join(current_file_dir, "..", "..", ".."))
+                playwright_mcp_dir = os.path.join(project_root, ".playwright-mcp")
                 
             if os.path.isdir(playwright_mcp_dir):
                 try:

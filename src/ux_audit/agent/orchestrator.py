@@ -8,7 +8,6 @@ streams thoughts + tokens concurrently, and handles clean shutdown.
 import asyncio
 import logging
 import signal
-import sys
 import threading
 from typing import Callable, Optional
 
@@ -19,8 +18,6 @@ from google.antigravity.types import (
     AntigravityExecutionError,
 )
 
-# Import hooks to ensure they are registered with the SDK framework
-from ux_audit.agent.hooks import AuditToolErrorHook, AuditCompactionHook, AuditPostToolCallHook
 from ux_audit.core.models import AuditRequest
 from ux_audit.ui.stream_printer import AuditStreamPrinter
 from ux_audit.agent.config import get_agent_config

@@ -1,7 +1,6 @@
-import sys
 import pytest
 import argparse
-from unittest.mock import patch, MagicMock, mock_open
+from unittest.mock import patch, mock_open
 from main import main, run_cli
 
 def test_main_gui_routing() -> None:

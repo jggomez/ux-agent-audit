@@ -1,4 +1,3 @@
-import os
 import pytest
 from unittest.mock import MagicMock, patch, mock_open
 from PySide6.QtWidgets import QApplication, QMessageBox, QFileDialog, QListWidgetItem

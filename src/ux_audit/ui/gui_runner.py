@@ -11,9 +11,8 @@ import sys
 import os
 import asyncio
 import logging
-import threading
 import traceback
-from typing import Sequence, List, Dict
+from typing import Sequence, Dict
 
 import markdown
 from PySide6.QtCore import QThread, Signal, Qt, QSize, QUrl, QMarginsF, QSettings
@@ -22,7 +21,6 @@ from PySide6.QtGui import (
     QPdfWriter,
     QPageLayout,
     QPageSize,
-    QFont,
     QIcon,
     QDesktopServices,
 )
@@ -43,14 +41,13 @@ from PySide6.QtWidgets import (
     QTextBrowser,
     QFileDialog,
     QMessageBox,
-    QCheckBox,
     QScrollArea,
     QTabWidget,
 )
 
 from ux_audit.core.models import AuditRequest
 from ux_audit.agent.orchestrator import run_ux_audit
-from ux_audit.core.constants import DEFAULT_AUDIT_URL, DEFAULT_USER_STORIES
+from ux_audit.core.constants import DEFAULT_AUDIT_URL
 
 logger = logging.getLogger(__name__)
 

@@ -1,8 +1,6 @@
 import os
-import sys
 import subprocess
 from unittest.mock import patch, MagicMock
-import pytest
 from ux_audit.core.env import setup_environment, _ensure_fallback_paths
 
 def test_ensure_fallback_paths() -> None:
