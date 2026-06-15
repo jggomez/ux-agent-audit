@@ -210,7 +210,7 @@ Once completed, the app switches to the **Report View**:
 
 ## Video - Demo
 
-[![Título de tu video](https://img.youtube.com/vi/6pYLzDZ8krM/0.jpg)](https://youtu.be/6pYLzDZ8krM)
+[![Demo UX Agent](https://img.youtube.com/vi/6pYLzDZ8krM/0.jpg)](https://youtu.be/6pYLzDZ8krM)
 
 ---
 
