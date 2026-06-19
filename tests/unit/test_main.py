@@ -14,7 +14,7 @@ def test_main_gui_routing() -> None:
         main()
         mock_setup_env.assert_called_once()
         mock_start_gui.assert_called_once()
-        mock_set_params.assert_called_once_with(None, None, None)
+        mock_set_params.assert_called_once_with(None, None, None, "")
 
 def test_main_cli_routing() -> None:
     # Test that with --cli, main calls run_cli
@@ -26,6 +26,7 @@ def test_main_cli_routing() -> None:
         assert args.cli is True
         assert args.url == "https://test.com"
         assert args.api_key == "my-key"
+        assert args.hints == ""
 
 def test_run_cli_no_api_key() -> None:
     args = argparse.Namespace(cli=True, url="https://test.com", api_key=None, stories=[], output="report.md")

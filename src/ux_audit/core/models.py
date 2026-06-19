@@ -33,6 +33,7 @@ class AuditRequest:
     target_url: str
     user_stories: tuple[str, ...]
     api_key: str | None = field(default=None, repr=False)
+    hints: str = ""
 
     def __post_init__(self) -> None:
         """Validates the request at construction time — fail fast."""
@@ -49,6 +50,7 @@ class AuditRequest:
         target_url: str,
         user_stories: Sequence[str],
         api_key: str | None = None,
+        hints: str = "",
     ) -> "AuditRequest":
         """
         Factory that converts mutable sequence inputs into the immutable
@@ -58,6 +60,7 @@ class AuditRequest:
             target_url: Target URL string.
             user_stories: Any sequence of story strings (list, tuple, generator).
             api_key: Optional API key override.
+            hints: Optional guide or credentials for the agent.
 
         Returns:
             A validated, frozen AuditRequest instance.
@@ -66,4 +69,5 @@ class AuditRequest:
             target_url=target_url,
             user_stories=tuple(user_stories),
             api_key=api_key,
+            hints=hints,
         )

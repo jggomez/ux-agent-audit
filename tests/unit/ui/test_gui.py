@@ -267,3 +267,48 @@ def test_mainwindow_start_audit_saves_api_key(q_app) -> None:
         assert window.wizard_stack.currentIndex() == 1
 
 
+def test_mainwindow_start_audit_passes_hints(q_app) -> None:
+    mock_settings = MagicMock()
+    with patch("ux_audit.ui.gui_runner.QSettings", return_value=mock_settings), \
+         patch("ux_audit.ui.gui_runner.AuditWorker") as mock_worker:
+        window = MainWindow()
+        window.url_input.setText("https://test.com")
+        window.api_key_input.setText("mock-persisted-api-key")
+        window.hints_input.setPlainText("Test hints: use user/pass")
+        window._start_audit_wizard()
+        
+        mock_worker.assert_called_once()
+        args, kwargs = mock_worker.call_args
+        request = args[0]
+        assert request.target_url == "https://test.com"
+        assert request.hints == "Test hints: use user/pass"
+
+
+def test_mainwindow_stop_audit_confirmed(q_app) -> None:
+    window = MainWindow()
+    mock_worker = MagicMock()
+    window.worker = mock_worker
+    window.wizard_stack.setCurrentIndex(1)
+    window.audit_cancelled = False
+
+    with patch.object(QMessageBox, "question", return_value=QMessageBox.StandardButton.Yes):
+        window._confirm_stop_audit()
+        assert window.audit_cancelled is True
+        mock_worker.stop.assert_called_once()
+        assert window.wizard_stack.currentIndex() == 0
+
+
+def test_mainwindow_stop_audit_declined(q_app) -> None:
+    window = MainWindow()
+    mock_worker = MagicMock()
+    window.worker = mock_worker
+    window.wizard_stack.setCurrentIndex(1)
+    window.audit_cancelled = False
+
+    with patch.object(QMessageBox, "question", return_value=QMessageBox.StandardButton.No):
+        window._confirm_stop_audit()
+        assert window.audit_cancelled is False
+        mock_worker.stop.assert_not_called()
+        assert window.wizard_stack.currentIndex() == 1
+
+

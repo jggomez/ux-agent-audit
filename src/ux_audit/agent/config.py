@@ -130,7 +130,7 @@ def get_agent_config(api_key: str | None = None) -> LocalAgentConfig:
     """
     # We disable subagents so the main agent (which has the Playwright MCP server mounted)
     # is forced to execute the browser audit tools itself instead of delegating.
-    from ux_audit.agent.hooks import AuditToolErrorHook, AuditCompactionHook, AuditPostToolCallHook
+    from ux_audit.agent.hooks import AuditToolErrorHook, AuditPostToolCallHook
     return LocalAgentConfig(
         system_instructions=SYSTEM_INSTRUCTIONS,
         capabilities=CapabilitiesConfig(
@@ -144,7 +144,6 @@ def get_agent_config(api_key: str | None = None) -> LocalAgentConfig:
         mcp_servers=[PLAYWRIGHT_MCP_SERVER],
         hooks=[
             AuditToolErrorHook(),
-            AuditCompactionHook(),
             AuditPostToolCallHook(),
         ],
         api_key=api_key,

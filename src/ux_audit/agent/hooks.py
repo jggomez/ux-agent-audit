@@ -38,20 +38,6 @@ class AuditToolErrorHook(hooks.OnToolErrorHook):
         )
 
 
-class AuditCompactionHook(hooks.OnCompactionHook):
-    """
-    Fires when the SDK triggers context window compaction during a
-    long audit session. Logs the event so operators can correlate
-    compaction moments with potential report truncation.
-    """
-
-    async def run(self, context: hooks.HookContext, data: Any) -> None:
-        logger.info(
-            "Context compaction triggered — audit session exceeded compaction "
-            "threshold. Report continuity may be affected for very long pages."
-        )
-
-
 import os
 
 class AuditPostToolCallHook(hooks.PostToolCallHook):

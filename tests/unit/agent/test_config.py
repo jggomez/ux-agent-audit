@@ -9,10 +9,9 @@ def test_get_agent_config_with_explicit_key() -> None:
     assert config.capabilities.compaction_threshold == 60000
     
     # Verify hooks registration
-    assert len(config.hooks) == 3
+    assert len(config.hooks) == 2
     hook_classes = [type(hook).__name__ for hook in config.hooks]
     assert "AuditToolErrorHook" in hook_classes
-    assert "AuditCompactionHook" in hook_classes
     assert "AuditPostToolCallHook" in hook_classes
 
     # Verify MCP server registration

@@ -11,7 +11,7 @@ datas += tmp_ret[0]; binaries += tmp_ret[1]; hiddenimports += tmp_ret[2]
 
 
 a = Analysis(
-    ['/Users/jggomez/Documents/jggomez/consultorias/overty/agent-ux-ui/src/main.py'],
+    ['/Users/jggomez/Documents/jggomez/code/agent-ux-ui/src/main.py'],
     pathex=[],
     binaries=binaries,
     datas=datas,
@@ -41,7 +41,7 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=['/Users/jggomez/Documents/jggomez/consultorias/overty/agent-ux-ui/icon.png'],
+    icon=['/Users/jggomez/Documents/jggomez/code/agent-ux-ui/icon.png'],
 )
 coll = COLLECT(
     exe,
@@ -55,6 +55,6 @@ coll = COLLECT(
 app = BUNDLE(
     coll,
     name='UX Audit Agent.app',
-    icon='/Users/jggomez/Documents/jggomez/consultorias/overty/agent-ux-ui/icon.png',
+    icon='/Users/jggomez/Documents/jggomez/code/agent-ux-ui/icon.png',
     bundle_identifier=None,
 )

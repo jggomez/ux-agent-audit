@@ -35,6 +35,18 @@ def test_build_audit_prompt_no_stories() -> None:
     assert "Do NOT include the 'User Story Validation' section in your report" in prompt
 
 
+def test_build_audit_prompt_with_hints() -> None:
+    """Test that the structured audit prompt includes instructions/hints when provided."""
+    url = "https://my-app.com"
+    stories = ("As a user I want to login",)
+    hints = "Use credentials test/test and bypass CAPTCHA."
+    prompt = build_audit_prompt(url, stories, hints)
+
+    assert "IMPORTANT AUDIT GUIDANCE & HINTS:" in prompt
+    assert "Use credentials test/test and bypass CAPTCHA." in prompt
+    assert "You MUST read and follow the audit guidance and hints" in prompt
+
+
 def test_register_shutdown_handler_background_thread() -> None:
     """Verify signal handlers are skipped when run from a background thread."""
     shutdown_event = asyncio.Event()

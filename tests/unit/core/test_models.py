@@ -37,3 +37,19 @@ def test_empty_stories_is_allowed() -> None:
     )
     assert req.target_url == "https://example.com"
     assert req.user_stories == ()
+
+
+def test_audit_request_with_hints() -> None:
+    """Test that hints are correctly populated and default to empty string."""
+    req_default = AuditRequest.from_primitives(
+        target_url="https://example.com",
+        user_stories=[]
+    )
+    assert req_default.hints == ""
+
+    req_with_hints = AuditRequest.from_primitives(
+        target_url="https://example.com",
+        user_stories=[],
+        hints="Please bypass registration and focus on landing page."
+    )
+    assert req_with_hints.hints == "Please bypass registration and focus on landing page."

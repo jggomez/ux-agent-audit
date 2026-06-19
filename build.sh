@@ -15,11 +15,8 @@ if [ ! -d ".venv" ]; then
     exit 1
 fi
 
-echo "Activating virtual environment..."
-source .venv/bin/activate
-
 echo "Running packaging and installer generator script..."
-python package_app.py
+"$PROJECT_DIR"/.venv/bin/python package_app.py
 
 echo "Build process completed successfully."
 exit 0

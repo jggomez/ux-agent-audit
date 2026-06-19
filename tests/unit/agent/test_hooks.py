@@ -2,7 +2,7 @@ import os
 import pytest
 from unittest.mock import MagicMock, patch
 
-from ux_audit.agent.hooks import AuditToolErrorHook, AuditCompactionHook, AuditPostToolCallHook
+from ux_audit.agent.hooks import AuditToolErrorHook, AuditPostToolCallHook
 
 
 @pytest.mark.asyncio
@@ -18,17 +18,6 @@ async def test_audit_tool_error_hook_returns_recovery_message() -> None:
     assert "[TOOL ERROR]" in recovery_message
     assert "Playwright element click timeout" in recovery_message
     assert "Please retry using an alternative selector" in recovery_message
-
-
-@pytest.mark.asyncio
-async def test_audit_compaction_hook() -> None:
-    """Test that compaction hook executes without raising errors."""
-    hook = AuditCompactionHook()
-    mock_context = MagicMock()
-    
-    with patch("ux_audit.agent.hooks.logger.info") as mock_info:
-        await hook.run(mock_context, "compaction data")
-        mock_info.assert_called_once()
 
 
 @pytest.mark.asyncio

@@ -116,16 +116,13 @@ def main() -> None:
     current_dir = os.path.dirname(os.path.abspath(__file__))
     entrypoint = os.path.join(current_dir, "src", "main.py")
 
-    # Locate pyinstaller in the same folder as the python executable running this script
-    pyinstaller_bin = os.path.join(os.path.dirname(sys.executable), "pyinstaller")
-    if not os.path.exists(pyinstaller_bin):
-        pyinstaller_bin = "pyinstaller"
-
     icon_path = os.path.join(current_dir, "icon.png")
 
-    # Build pyinstaller command line
+    # Build pyinstaller command line using python -m PyInstaller to bypass broken shebangs
     cmd = [
-        pyinstaller_bin,
+        sys.executable,
+        "-m",
+        "PyInstaller",
         "--name=UX Audit Agent",
         "--noconfirm",               # Overwrite output directory without confirmation
         "--onedir",                  # Bundle as directory (allows easier inspection and deployment)

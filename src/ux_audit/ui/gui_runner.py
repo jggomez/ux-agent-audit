@@ -55,18 +55,21 @@ logger = logging.getLogger(__name__)
 _startup_url: str | None = None
 _startup_stories: Sequence[str] | None = None
 _startup_api_key: str | None = None
+_startup_hints: str | None = None
 
 
 def set_startup_params(
     url: str | None,
     stories: Sequence[str] | None,
     api_key: str | None,
+    hints: str | None = None,
 ) -> None:
     """Sets initial parameters parsed from launcher args to seed the GUI."""
-    global _startup_url, _startup_stories, _startup_api_key
+    global _startup_url, _startup_stories, _startup_api_key, _startup_hints
     _startup_url = url
     _startup_stories = stories
     _startup_api_key = api_key
+    _startup_hints = hints
 
 
 # ─── Worker Thread for Async Orchestrator ─────────────────────────────────────
@@ -102,12 +105,24 @@ class AuditWorker(QThread):
                 )
             )
             self.finished_signal.emit(report_text)
+        except asyncio.CancelledError:
+            self.finished_signal.emit("")
         except Exception as exc:
             logger.exception("Audit run failed on background thread")
             tb = traceback.format_exc()
             self.error_signal.emit(str(exc) or type(exc).__name__, tb)
         finally:
             self.loop.close()
+
+    def stop(self) -> None:
+        """Stops the worker thread by cancelling all running asyncio tasks in the event loop."""
+        if self.loop and self.loop.is_running():
+            self.loop.call_soon_threadsafe(self._cancel_all_tasks)
+
+    def _cancel_all_tasks(self) -> None:
+        """Helper running in loop context to cancel all active tasks."""
+        for task in asyncio.all_tasks(self.loop):
+            task.cancel()
 
 
 # ─── Main Window Class ────────────────────────────────────────────────────────
@@ -125,6 +140,7 @@ class MainWindow(QMainWindow):
         self.report_text = ""
         self.thoughts_text = ""
         self.worker = None
+        self.audit_cancelled = False
 
         # Base structure
         self.central_widget = QWidget(self)
@@ -260,6 +276,9 @@ class MainWindow(QMainWindow):
                 # Add stories directly
                 item = QListWidgetItem(story)
                 self.stories_list.addItem(item)
+
+        if _startup_hints:
+            self.hints_input.setPlainText(_startup_hints)
 
         # Load API Key from QSettings, startup params, or env fallback
         self.settings = QSettings("UXAuditAgent", "UXAuditAgent")
@@ -418,6 +437,23 @@ class MainWindow(QMainWindow):
         stories_box.addLayout(manager_layout)
         form_layout.addLayout(stories_box)
 
+        # Hints / Guidance (Optional)
+        hints_box = QVBoxLayout()
+        hints_box.setSpacing(8)
+        hints_label = QLabel("Agent Hints & Guidance (Optional):", widget)
+        hints_label.setStyleSheet("font-weight: bold; color: #f4f4f5;")
+        self.hints_input = QPlainTextEdit(widget)
+        self.hints_input.setPlaceholderText(
+            "Example: If you encounter a login form, use username 'test_user' and password 'secret123'. "
+            "Please focus the audit on the checkout flow page."
+        )
+        self.hints_input.setToolTip("Provide optional instructions, paths, or login credentials for the auditor agent.")
+        self.hints_input.setMaximumHeight(80)
+
+        hints_box.addWidget(hints_label)
+        hints_box.addWidget(self.hints_input)
+        form_layout.addLayout(hints_box)
+
         # API Key Required Field
         api_box = QVBoxLayout()
         api_box.setSpacing(8)
@@ -562,7 +598,45 @@ class MainWindow(QMainWindow):
         """)
         layout.addWidget(self.thought_console)
 
+        # Stop Button
+        self.stop_btn = QPushButton("Stop Audit", widget)
+        self.stop_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #1a1515;
+                border: 1px solid #ef4444;
+                color: #f87171;
+                font-weight: bold;
+                height: 38px;
+            }
+            QPushButton:hover {
+                background-color: #ef4444;
+                color: white;
+            }
+            QPushButton:pressed {
+                background-color: #7f1d1d;
+            }
+        """)
+        self.stop_btn.clicked.connect(self._confirm_stop_audit)
+        layout.addWidget(self.stop_btn)
+
         self.wizard_stack.addWidget(widget)
+
+    def _confirm_stop_audit(self) -> None:
+        """Prompts the user to confirm stopping the active audit."""
+        reply = QMessageBox.question(
+            self,
+            "Confirm Stop",
+            "Are you sure you want to stop the audit and return to the configuration screen?",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No
+        )
+        if reply == QMessageBox.StandardButton.Yes:
+            self.audit_cancelled = True
+            self.status_bar_label.setText("Stopping agent...")
+            if self.worker:
+                self.worker.stop()
+            # Switch back to configuration screen immediately
+            self.wizard_stack.setCurrentIndex(0)
 
     def _set_step_ui_status(self, key: str, status: str) -> None:
         """Sets QSS stylesheet on stepper circles/texts depending on execution states."""
@@ -820,12 +894,16 @@ class MainWindow(QMainWindow):
         self.settings.setValue("api_key", api_key)
         self.settings.sync()
 
+        hints = self.hints_input.toPlainText().strip()
+        self.audit_cancelled = False
+
         try:
             # Build parameter request object (fail fast validation check)
             request = AuditRequest.from_primitives(
                 target_url=url,
                 user_stories=stories,
-                api_key=api_key
+                api_key=api_key,
+                hints=hints
             )
         except ValueError as err:
             QMessageBox.critical(self, "Validation Error", f"Invalid parameters:\n{err}")
@@ -868,6 +946,8 @@ class MainWindow(QMainWindow):
 
     def _handle_audit_finished(self, final_report: str) -> None:
         """Auditor finished: sets markdown, switches to view 3."""
+        if self.audit_cancelled:
+            return
         self.report_text = final_report
         
         # Convert final report markdown to HTML and apply premium dark styling
@@ -1078,6 +1158,8 @@ class MainWindow(QMainWindow):
 
     def _handle_audit_error(self, err_msg: str, traceback_text: str) -> None:
         """Handles background exceptions by showing a detailed QMessageBox."""
+        if self.audit_cancelled:
+            return
         msg_box = QMessageBox(self)
         msg_box.setIcon(QMessageBox.Icon.Critical)
         msg_box.setWindowTitle("Execution Failure")

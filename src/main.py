@@ -47,10 +47,11 @@ def run_cli(args: argparse.Namespace) -> None:
     request = AuditRequest(
         target_url=url,
         user_stories=user_stories,
-        api_key=api_key
+        api_key=api_key,
+        hints=getattr(args, "hints", "")
     )
 
-    print(f"\nStarting UX/UI Audit CLI...")
+    print("\nStarting UX/UI Audit CLI...")
     print(f"Target URL: {url}")
     print(f"User Stories: {len(user_stories)} loaded")
     print(f"Output File: {args.output}")
@@ -73,8 +74,8 @@ def run_cli(args: argparse.Namespace) -> None:
             output_path = os.path.abspath(args.output)
             with open(output_path, "w", encoding="utf-8") as f:
                 f.write(report_text)
-            print(f"\n" + "=" * 60)
-            print(f"AUDIT COMPLETED SUCCESSFULLY!")
+            print("\n" + "=" * 60)
+            print("AUDIT COMPLETED SUCCESSFULLY!")
             print(f"Report saved to: {output_path}")
             print("=" * 60 + "\n")
         else:
@@ -97,6 +98,7 @@ def main() -> None:
     parser.add_argument("--url", type=str, help="Target URL to audit")
     parser.add_argument("--stories", type=str, nargs="*", help="User stories to validate")
     parser.add_argument("--api-key", type=str, help="Gemini API key override")
+    parser.add_argument("--hints", type=str, default="", help="Optional hints or guidelines for the agent (e.g. login credentials)")
     parser.add_argument("--output", type=str, default="audit_report.md", help="Output Markdown report path (CLI only)")
 
     args = parser.parse_args()
@@ -110,7 +112,7 @@ def main() -> None:
         configure_logging()
         
         # Seed startup params if specified
-        set_startup_params(args.url, args.stories, args.api_key)
+        set_startup_params(args.url, args.stories, args.api_key, getattr(args, "hints", ""))
         start_gui()
 
 if __name__ == "__main__":

@@ -13,11 +13,13 @@ An autonomous usability and accessibility auditor desktop application built on t
 * **Multimodal Visual Verification**: The agent does not simply parse DOM trees. It visually inspects screenshot viewports at multiple scrolling folds and resizes layouts to mobile viewports (e.g., 390px) to verify responsive scaling, overlapping elements, or text truncation.
 * **User Story and Acceptance Criteria Validation**: When user stories are provided, the agent prioritizes navigating those specific user journeys, verifying criteria success, and generating structured compliance cards (`[MET]`, `[PARTIALLY MET]`, `[NOT MET]`). If left empty, it runs a comprehensive site-wide heuristics audit.
 * **PySide6 Desktop GUI App**: A native desktop application that launches full-screen and features:
-  * **Wizard Setup**: A guided interface to manage target URLs, user stories, and Gemini API keys.
+  * **Wizard Setup**: A guided interface to manage target URLs, user stories, custom hints, and Gemini API keys.
   * **Real-time Console**: A monospace log displaying the agent's concurrent thoughts and browser interactions.
   * **Tabbed Results Viewer**: A tabbed screen separating the beautifully styled Executive Report (with severity pills and styled tables) and the full Agent Thinking Process log.
   * **Visual Audit Trail**: A scrollable gallery of screenshots captured by the agent during navigation.
   * **Advanced Exporters**: Export capabilities for styled PDF reports (fixed margin rendering), raw Markdown reports, and raw thinking process text logs.
+  * **Hints & Custom Guidance**: Allows developers or designers to supply custom context or focus instructions (e.g. login credentials, specific flows, or special guidelines) via a new GUI text field or the CLI `--hints` flag.
+  * **Stop Audit Cancellation**: A clean, thread-safe cancellation button to abort a running audit at any time with a confirmation popup.
 
 ---
 
@@ -160,7 +162,8 @@ Once the application opens (it launches maximized by default):
    * Type the criteria (e.g., *Enter email, Click Login button, redirected to dashboard*) into the **Acceptance Criteria** field.
    * Click **Add User Story** to include it in the validation queue.
    * *If no user stories are added, the agent performs a general UX/UI and accessibility heuristic audit of the page.*
-3. **Gemini API Key**: Paste your Gemini API Key in the **API Key** input field (it will be persisted securely on your system).
+3. **Hints and Guidance (Optional)**: Provide custom guidelines or focus areas for the agent (e.g., specific accessibility standards to test, user credentials, or sub-paths to focus on).
+4. **Gemini API Key**: Paste your Gemini API Key in the **API Key** input field (it will be persisted securely on your system).
 ------
 
 <img width="1440" height="900" alt="Screenshot 2026-06-14 at 4 33 14 p m" src="https://github.com/user-attachments/assets/815d1d10-0511-4b48-b41b-578a144011d0" />
@@ -172,6 +175,7 @@ Click the **Start Audit** button at the bottom of the screen.
 * The application will switch to the **Live Auditing Console**.
 * The left panel displays a checklist showing the active browser stage (e.g., *Initializing, Launching viewport, Executing actions, Streaming report*).
 * The right panel displays the **Reasoning thoughts log** in real-time, showing the agent's internal reasoning, selected browser tools, and selectors it plans to click.
+* **Stop Audit**: Click the **Stop Audit** button in the lower-right area at any point during execution. A confirmation dialog will prompt you to confirm the cancellation. If accepted, the running audit worker thread and the browser instance are stopped gracefully and safely.
 -------
 
 <img width="1412" height="867" alt="Screenshot 2026-06-14 at 4 28 41 p m" src="https://github.com/user-attachments/assets/c778d443-c10a-417f-bb7e-acc77bea7edb" />
@@ -230,6 +234,14 @@ To audit specific user journeys, pass one or more `--stories` arguments. The CLI
 ./.venv/bin/python src/main.py --cli \
   --url "https://my-app.com" \
   --stories "As a user, I want to authenticate" "As a manager, I want to export data"
+```
+
+#### Custom Hints & Guidance
+To supply custom focus instructions, testing guidelines, or credentials:
+```bash
+./.venv/bin/python src/main.py --cli \
+  --url "https://my-app.com" \
+  --hints "Focus on mobile responsiveness layout contrast and accessibility landmarks."
 ```
 
 #### How the CLI Runs

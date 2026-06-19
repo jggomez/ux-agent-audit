@@ -27,13 +27,14 @@ logger = logging.getLogger(__name__)
 
 # ─── Prompt Builder ───────────────────────────────────────────────────────────
 
-def build_audit_prompt(url: str, user_stories: tuple[str, ...]) -> str:
+def build_audit_prompt(url: str, user_stories: tuple[str, ...], hints: str = "") -> str:
     """
     Constructs the structured audit instruction prompt for the agent.
 
     Args:
         url: The target URL to audit.
         user_stories: Tuple of user story strings to validate against.
+        hints: Optional hints or guidance for the agent.
 
     Returns:
         A formatted multi-line prompt string.
@@ -54,9 +55,19 @@ def build_audit_prompt(url: str, user_stories: tuple[str, ...]) -> str:
             "Do NOT include the 'User Story Validation' section in your report, and proceed directly to findings."
         )
 
+    hints_block = ""
+    if hints.strip():
+        hints_block = (
+            f"IMPORTANT AUDIT GUIDANCE & HINTS:\n"
+            f"{hints.strip()}\n\n"
+            f"You MUST read and follow the audit guidance and hints provided above during your exploration and validation. "
+            f"Use any provided credentials or navigate through the specific paths suggested.\n\n"
+        )
+
     return (
         f"BEGIN AUDIT\n\n"
         f"Target URL: {url}\n\n"
+        f"{hints_block}"
         f"{stories_block}\n\n"
         f"Navigate to the target URL now using your browser tools and perform "
         f"the complete UX/UI and accessibility audit. "
@@ -137,7 +148,7 @@ async def run_ux_audit(
     if on_status_change:
         on_status_change("initializing", "Initializing Auditor Agent configuration...")
 
-    prompt = build_audit_prompt(request.target_url, request.user_stories)
+    prompt = build_audit_prompt(request.target_url, request.user_stories, request.hints)
     agent_config = get_agent_config(api_key=request.api_key)
 
     logger.info("Initializing Senior Usability & Accessibility Auditor agent...")
