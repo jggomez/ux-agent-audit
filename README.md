@@ -166,7 +166,7 @@ Once the application opens (it launches maximized by default):
 4. **Gemini API Key**: Paste your Gemini API Key in the **API Key** input field (it will be persisted securely on your system).
 ------
 
-<img width="1440" height="900" alt="Screenshot 2026-06-14 at 4 33 14 p m" src="https://github.com/user-attachments/assets/815d1d10-0511-4b48-b41b-578a144011d0" />
+<img width="1416" height="876" alt="Screenshot 2026-06-19 at 10 16 58 p m" src="https://github.com/user-attachments/assets/6abfe852-3935-48e4-93f8-2573138f11b9" />
 
 -------
 
